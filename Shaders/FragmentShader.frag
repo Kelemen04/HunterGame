@@ -8,7 +8,7 @@ uniform vec3 uViewPos;
 uniform float uShininess;
 
 uniform sampler2D uTexture;
-		
+
 in vec4 outCol;
 in vec3 outNormal;
 in vec3 outWorldPosition;

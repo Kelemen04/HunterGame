@@ -1214,24 +1214,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\kolum\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Szilard\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Koli\\Munka\\BBTE\\Tantargyak\\Grafika (MLM5060)\\Kodok\\Grafika-MLM5060\\Szemi5\\2025\\Hetfo18-ptln\\GrafikaSzeminarium\\GrafikaSzeminarium.csproj",
+      "projectUniqueName": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\GrafikaSzeminarium.csproj",
       "projectName": "GrafikaSzeminarium",
-      "projectPath": "D:\\Koli\\Munka\\BBTE\\Tantargyak\\Grafika (MLM5060)\\Kodok\\Grafika-MLM5060\\Szemi5\\2025\\Hetfo18-ptln\\GrafikaSzeminarium\\GrafikaSzeminarium.csproj",
-      "packagesPath": "C:\\Users\\kolum\\.nuget\\packages\\",
-      "outputPath": "D:\\Koli\\Munka\\BBTE\\Tantargyak\\Grafika (MLM5060)\\Kodok\\Grafika-MLM5060\\Szemi5\\2025\\Hetfo18-ptln\\GrafikaSzeminarium\\obj\\",
+      "projectPath": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\GrafikaSzeminarium.csproj",
+      "packagesPath": "C:\\Users\\Szilard\\.nuget\\packages\\",
+      "outputPath": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\kolum\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\Szilard\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1239,15 +1234,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
-        "C:\\Users\\kolum\\.nuget\\repository": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://nexus.kilgray.com/repository/kilgray-nuget-dev-sandbox/": {},
-        "https://nexus.kilgray.com/repository/kilgray-private-nuget-release/": {},
-        "https://nexus.kilgray.com/repository/kilgray-private-nuget-snapshot/": {},
-        "https://nexus.kilgray.com/repository/memoq-nuget-debug/": {},
-        "https://nexus.kilgray.com/repository/memoq-nuget-release/": {},
-        "https://nexus.kilgray.com/repository/memoq-nuget-sandbox/": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
@@ -1264,8 +1251,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.200"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -1300,7 +1286,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -3,7 +3,7 @@ using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Windowing;
-using System.Dynamic;
+using StbImageSharp;
 using System.Numerics;
 using System.Reflection;
 using Szeminarium;
@@ -13,36 +13,31 @@ namespace GrafikaSzeminarium
     internal class Program
     {
         private static IWindow graphicWindow;
-
         private static GL Gl;
-
         private static ImGuiController imGuiController;
-
         private static ModelObjectDescriptor cube;
-
-        private static ModelObjectDescriptor teapot;
-
+        private static ModelObjectDescriptor ground;
+        private static ModelObjectDescriptor mrEgg;
+        private static ModelObjectDescriptor house;
+        private static ModelObjectDescriptor rockWall;
+        private static ModelObjectDescriptor ammo;
+        private static ModelObjectDescriptor trees;
+        private static ModelObjectDescriptor foxy;
         private static ModelObjectDescriptor skybox;
-
         private static CameraDescriptor camera = new CameraDescriptor();
-
         private static CubeArrangementModel cubeArrangementModel = new CubeArrangementModel();
 
         private const string ModelMatrixVariableName = "uModel";
         private const string NormalMatrixVariableName = "uNormal";
         private const string ViewMatrixVariableName = "uView";
         private const string ProjectionMatrixVariableName = "uProjection";
-
         private const string LightColorVariableName = "uLightColor";
         private const string LightPositionVariableName = "uLightPos";
         private const string ViewPositionVariableName = "uViewPos";
-
         private const string ShinenessVariableName = "uShininess";
-
         private const string TextureVariableName = "uTexture";
 
         private static float shininess = 50;
-
         private static uint program;
 
         static void Main(string[] args)
@@ -50,7 +45,6 @@ namespace GrafikaSzeminarium
             WindowOptions windowOptions = WindowOptions.Default;
             windowOptions.Title = "Grafika szeminárium";
             windowOptions.Size = new Silk.NET.Maths.Vector2D<int>(500, 500);
-
             graphicWindow = Window.Create(windowOptions);
 
             graphicWindow.Load += GraphicWindow_Load;
@@ -64,45 +58,41 @@ namespace GrafikaSzeminarium
         private static void GraphicWindow_Closing()
         {
             cube.Dispose();
-            teapot.Dispose();
+            ground.Dispose();
+            mrEgg.Dispose();
+            foxy.Dispose();
+            rockWall.Dispose();
+            ammo.Dispose();
+            trees.Dispose();
             Gl.DeleteProgram(program);
         }
 
         private static void GraphicWindow_Load()
         {
             Gl = graphicWindow.CreateOpenGL();
-
             var inputContext = graphicWindow.CreateInput();
+
             foreach (var keyboard in inputContext.Keyboards)
             {
                 keyboard.KeyDown += Keyboard_KeyDown;
             }
 
-            // Handle resizes
-            graphicWindow.FramebufferResize += s =>
-            {
-                // Adjust the viewport to the new window size
-                Gl.Viewport(s);
-            };
-
-
-
+            graphicWindow.FramebufferResize += s => Gl.Viewport(s);
             imGuiController = new ImGuiController(Gl, graphicWindow, inputContext);
 
             cube = ModelObjectDescriptor.CreateCube(Gl);
-
-            teapot = ModelObjectDescriptor.CreateTeapot(Gl);
-
+            ground = ModelObjectDescriptor.CreateGround(Gl);
+            mrEgg = ObjectResourceReader.CreateObjectFromResource(Gl, "MrEgg.obj");
+            house = ObjectResourceReader.CreateObjectFromResource(Gl, "cartoon_house.obj");
+            rockWall = ObjectResourceReader.CreateObjectFromResource(Gl, "CaveWalls3.obj");
+            ammo = ObjectResourceReader.CreateObjectFromResource(Gl, "ammo.obj");
+            trees = ObjectResourceReader.CreateObjectFromResource(Gl, "trees.obj");
+            foxy = ObjectResourceReader.CreateObjectFromResource(Gl, "Foxy.obj");
             skybox = ModelObjectDescriptor.CreateSkyBox(Gl);
 
             Gl.ClearColor(System.Drawing.Color.White);
-            
-            //Gl.Enable(EnableCap.CullFace);
-            //Gl.CullFace(TriangleFace.Back);
-
             Gl.Enable(EnableCap.DepthTest);
             Gl.DepthFunc(DepthFunction.Lequal);
-
 
             uint vshader = Gl.CreateShader(ShaderType.VertexShader);
             uint fshader = Gl.CreateShader(ShaderType.FragmentShader);
@@ -128,10 +118,6 @@ namespace GrafikaSzeminarium
             Gl.DetachShader(program, fshader);
             Gl.DeleteShader(vshader);
             Gl.DeleteShader(fshader);
-            if ((ErrorCode)Gl.GetError() != ErrorCode.NoError)
-            {
-
-            }
 
             Gl.GetProgram(program, GLEnum.LinkStatus, out var status);
             if (status == 0)
@@ -143,12 +129,10 @@ namespace GrafikaSzeminarium
         private static string GetEmbeddedResourceAsString(string resourceRelativePath)
         {
             string resourceFullPath = Assembly.GetExecutingAssembly().GetName().Name + "." + resourceRelativePath;
-
             using (var resStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceFullPath))
             using (var resStreamReader = new StreamReader(resStream))
             {
-                var text = resStreamReader.ReadToEnd();
-                return text;
+                return resStreamReader.ReadToEnd();
             }
         }
 
@@ -156,44 +140,29 @@ namespace GrafikaSzeminarium
         {
             switch (key)
             {
-                case Key.Left:
-                    camera.DecreaseZYAngle();
-                    break;
-                case Key.Right:
-                    camera.IncreaseZYAngle();
-                    break;
-                case Key.Down:
-                    camera.IncreaseDistance();
-                    break;
-                case Key.Up:
-                    camera.DecreaseDistance();
-                    break;
-                case Key.U:
-                    camera.IncreaseZXAngle();
-                    break;
-                case Key.D:
-                    camera.DecreaseZXAngle();
-                    break;
-                case Key.Space:
-                    cubeArrangementModel.AnimationEnabled = !cubeArrangementModel.AnimationEnabled;
-                    break;
+                case Key.Left: camera.DecreaseZYAngle(); break;
+                case Key.Right: camera.IncreaseZYAngle(); break;
+                case Key.Down: camera.IncreaseDistance(); break;
+                case Key.Up: camera.DecreaseDistance(); break;
+                case Key.U: camera.IncreaseZXAngle(); break;
+                case Key.D: camera.DecreaseZXAngle(); break;
+                case Key.Space: cubeArrangementModel.AnimationEnabled = !cubeArrangementModel.AnimationEnabled; break;
+                case Key.A: cubeArrangementModel.SetMrEggVelocity(new Vector3(-1, 0, 0)); break;
+                case Key.L: cubeArrangementModel.SetMrEggVelocity(new Vector3(1, 0, 0)); break;
+                case Key.W: cubeArrangementModel.SetMrEggVelocity(new Vector3(0, 0, -1)); break;
+                case Key.S: cubeArrangementModel.SetMrEggVelocity(new Vector3(0, 0, 1)); break;
             }
         }
 
         private static void GraphicWindow_Update(double deltaTime)
         {
-            // NO OpenGL
-            // make it threadsafe
             cubeArrangementModel.AdvanceTime(deltaTime);
-
             imGuiController.Update((float)deltaTime);
         }
 
         private static unsafe void GraphicWindow_Render(double deltaTime)
         {
-            Gl.Clear(ClearBufferMask.ColorBufferBit);
-            Gl.Clear(ClearBufferMask.DepthBufferBit);
-
+            Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             Gl.UseProgram(program);
 
             SetUniform3(LightColorVariableName, new Vector3(1f, 1f, 1f));
@@ -204,92 +173,30 @@ namespace GrafikaSzeminarium
             var viewMatrix = Matrix4X4.CreateLookAt(camera.Position, camera.Target, camera.UpVector);
             SetMatrix(viewMatrix, ViewMatrixVariableName);
 
-            var projectionMatrix = Matrix4X4.CreatePerspectiveFieldOfView<float>((float)(Math.PI / 2), 1024f / 768f, 0.1f, 100f);
+            var projectionMatrix = Matrix4X4.CreatePerspectiveFieldOfView<float>((float)(Math.PI / 2), 1024f / 768f, 0.1f, 10000f);
             SetMatrix(projectionMatrix, ProjectionMatrixVariableName);
 
-            DrawSkyBox();
+            // Drawing using the Renderers class
+            Renderers.DrawSkyBox(Gl, program, skybox, camera.Position);
+            Renderers.DrawGround(Gl, program, ground);
+            Renderers.DrawMrEgg(Gl, program, mrEgg, cubeArrangementModel.MrEggPosition);
+            Renderers.DrawFoxy(Gl, program, foxy, cubeArrangementModel.MrEggPosition);
+            Renderers.DrawHouse(Gl, program, house);
+            Renderers.DrawWalls(Gl, program, rockWall);
+            Renderers.DrawAmmo(Gl, program, ammo);
+            Renderers.DrawTrees(Gl, program, trees);
 
-            var modelMatrixCenterCube = Matrix4X4.CreateScale((float)cubeArrangementModel.CenterCubeScale);
-            SetModelMatrix(modelMatrixCenterCube);
-            DrawModelObject(teapot);
-
-            Matrix4X4<float> diamondScale = Matrix4X4.CreateScale(0.25f);
-            Matrix4X4<float> rotx = Matrix4X4.CreateRotationX((float)Math.PI / 4f);
-            Matrix4X4<float> rotz = Matrix4X4.CreateRotationZ((float)Math.PI / 4f);
-            Matrix4X4<float> roty = Matrix4X4.CreateRotationY((float)cubeArrangementModel.DiamondCubeLocalAngle);
-            Matrix4X4<float> trans = Matrix4X4.CreateTranslation(1f, 1f, 0f);
-            Matrix4X4<float> rotGlobalY = Matrix4X4.CreateRotationY((float)cubeArrangementModel.DiamondCubeGlobalYAngle);
-            Matrix4X4<float> dimondCubeModelMatrix = diamondScale * rotx * rotz * roty * trans * rotGlobalY;
-            SetModelMatrix(dimondCubeModelMatrix);
-            DrawModelObject(cube);
-
-            //ImGuiNET.ImGui.ShowDemoWindow();
+            // ImGUI rendering
             ImGuiNET.ImGui.Begin("Lighting", ImGuiNET.ImGuiWindowFlags.AlwaysAutoResize | ImGuiNET.ImGuiWindowFlags.NoCollapse);
             ImGuiNET.ImGui.SliderFloat("Shininess", ref shininess, 5, 100);
             ImGuiNET.ImGui.End();
-
             imGuiController.Render();
-        }
-
-        private static unsafe void DrawSkyBox()
-        {
-            var modelMatrixSkyBox = Matrix4X4.CreateScale(100f);
-            SetModelMatrix(modelMatrixSkyBox);
-
-            // set the texture
-            int textureLocation = Gl.GetUniformLocation(program, TextureVariableName);
-            if (textureLocation == -1)
-            {
-                throw new Exception($"{TextureVariableName} uniform not found on shader.");
-            }
-            // set texture 0
-            Gl.Uniform1(textureLocation, 0);
-            Gl.ActiveTexture(TextureUnit.Texture0);
-            Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (float)GLEnum.Linear);
-            Gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (float)GLEnum.Linear);
-            Gl.BindTexture(TextureTarget.Texture2D, skybox.Texture.Value);
-
-            DrawModelObject(skybox);
-
-            CheckError();
-            Gl.BindTexture(TextureTarget.Texture2D, 0);
-            CheckError();
-        }
-
-        private static unsafe void SetModelMatrix(Matrix4X4<float> modelMatrix)
-        {
-            SetMatrix(modelMatrix, ModelMatrixVariableName);
-
-            // set also the normal matrix
-            int location = Gl.GetUniformLocation(program, NormalMatrixVariableName);
-            if (location == -1)
-            {
-                throw new Exception($"{NormalMatrixVariableName} uniform not found on shader.");
-            }
-
-            // G = (M^-1)^T
-            var modelMatrixWithoutTranslation = new Matrix4X4<float>(modelMatrix.Row1, modelMatrix.Row2, modelMatrix.Row3, modelMatrix.Row4);
-            modelMatrixWithoutTranslation.M41 = 0;
-            modelMatrixWithoutTranslation.M42 = 0;
-            modelMatrixWithoutTranslation.M43 = 0;
-            modelMatrixWithoutTranslation.M44 = 1;
-
-            Matrix4X4<float> modelInvers;
-            Matrix4X4.Invert<float>(modelMatrixWithoutTranslation, out modelInvers);
-            Matrix3X3<float> normalMatrix = new Matrix3X3<float>(Matrix4X4.Transpose(modelInvers));
-
-            Gl.UniformMatrix3(location, 1, false, (float*)&normalMatrix);
-            CheckError();
         }
 
         private static unsafe void SetUniform1(string uniformName, float uniformValue)
         {
             int location = Gl.GetUniformLocation(program, uniformName);
-            if (location == -1)
-            {
-                throw new Exception($"{uniformName} uniform not found on shader.");
-            }
-
+            if (location == -1) throw new Exception($"{uniformName} uniform not found on shader.");
             Gl.Uniform1(location, uniformValue);
             CheckError();
         }
@@ -297,32 +204,15 @@ namespace GrafikaSzeminarium
         private static unsafe void SetUniform3(string uniformName, Vector3 uniformValue)
         {
             int location = Gl.GetUniformLocation(program, uniformName);
-            if (location == -1)
-            {
-                throw new Exception($"{uniformName} uniform not found on shader.");
-            }
-
+            if (location == -1) throw new Exception($"{uniformName} uniform not found on shader.");
             Gl.Uniform3(location, uniformValue);
             CheckError();
-        }
-
-        private static unsafe void DrawModelObject(ModelObjectDescriptor modelObject)
-        {
-            Gl.BindVertexArray(modelObject.Vao);
-            Gl.BindBuffer(GLEnum.ElementArrayBuffer, modelObject.Indices);
-            Gl.DrawElements(PrimitiveType.Triangles, modelObject.IndexArrayLength, DrawElementsType.UnsignedInt, null);
-            Gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
-            Gl.BindVertexArray(0);
         }
 
         private static unsafe void SetMatrix(Matrix4X4<float> mx, string uniformName)
         {
             int location = Gl.GetUniformLocation(program, uniformName);
-            if (location == -1)
-            {
-                throw new Exception($"{uniformName} uniform not found on shader.");
-            }
-
+            if (location == -1) throw new Exception($"{uniformName} uniform not found on shader.");
             Gl.UniformMatrix4(location, 1, false, (float*)&mx);
             CheckError();
         }

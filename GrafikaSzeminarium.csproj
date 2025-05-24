@@ -9,15 +9,47 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\ammo.mtl" />
+    <None Remove="Resources\ammo.obj" />
+    <None Remove="Resources\cartoon_house.mtl" />
+    <None Remove="Resources\cartoon_house.obj" />
+    <None Remove="Resources\CaveWalls3.mtl" />
+    <None Remove="Resources\CaveWalls3.obj" />
+    <None Remove="Resources\CaveWalls3_Base_Diffuse.png" />
+    <None Remove="Resources\forest_nature_set_all_in.obj" />
+    <None Remove="Resources\Foxy.mtl" />
+    <None Remove="Resources\Foxy.obj" />
+    <None Remove="Resources\grass.jpg" />
+    <None Remove="Resources\grass.png" />
+    <None Remove="Resources\MrEgg.obj" />
     <None Remove="Resources\skybox.png" />
-    <None Remove="Resources\teapot.obj" />
+    <None Remove="Resources\tex1.png" />
+    <None Remove="Resources\tree.obj" />
+    <None Remove="Resources\trees.mtl" />
+    <None Remove="Resources\trees.obj" />
+    <None Remove="Resources\Wolf.obj" />
+    <None Remove="Resources\Wolf.png" />
     <None Remove="Shaders\FragmentShader.frag" />
     <None Remove="Shaders\VertexShader.vert" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\ammo.mtl" />
+    <EmbeddedResource Include="Resources\ammo.obj" />
+    <EmbeddedResource Include="Resources\cartoon_house.mtl" />
+    <EmbeddedResource Include="Resources\cartoon_house.obj" />
+    <EmbeddedResource Include="Resources\CaveWalls3.mtl" />
+    <EmbeddedResource Include="Resources\CaveWalls3.obj" />
+    <EmbeddedResource Include="Resources\CaveWalls3_Base_Diffuse.png" />
+    <EmbeddedResource Include="Resources\Foxy.mtl" />
+    <EmbeddedResource Include="Resources\Foxy.obj" />
+    <EmbeddedResource Include="Resources\grass.jpg" />
+    <EmbeddedResource Include="Resources\MrEgg.obj" />
     <EmbeddedResource Include="Resources\skybox.png" />
-    <EmbeddedResource Include="Resources\teapot.obj" />
+    <EmbeddedResource Include="Resources\tex1.png" />
+    <EmbeddedResource Include="Resources\tree.obj" />
+    <EmbeddedResource Include="Resources\trees.mtl" />
+    <EmbeddedResource Include="Resources\trees.obj" />
     <EmbeddedResource Include="Shaders\FragmentShader.frag" />
     <EmbeddedResource Include="Shaders\VertexShader.vert" />
   </ItemGroup>
