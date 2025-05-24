@@ -17,7 +17,7 @@ namespace GrafikaSzeminarium
         private static ImGuiController imGuiController;
         private static ModelObjectDescriptor cube;
         private static ModelObjectDescriptor ground;
-        private static ModelObjectDescriptor mrEgg;
+        private static ModelObjectDescriptor man;
         private static ModelObjectDescriptor house;
         private static ModelObjectDescriptor rockWall;
         private static ModelObjectDescriptor ammo;
@@ -59,7 +59,7 @@ namespace GrafikaSzeminarium
         {
             cube.Dispose();
             ground.Dispose();
-            mrEgg.Dispose();
+            man.Dispose();
             foxy.Dispose();
             rockWall.Dispose();
             ammo.Dispose();
@@ -82,7 +82,7 @@ namespace GrafikaSzeminarium
 
             cube = ModelObjectDescriptor.CreateCube(Gl);
             ground = ModelObjectDescriptor.CreateGround(Gl);
-            mrEgg = ObjectResourceReader.CreateObjectFromResource(Gl, "MrEgg.obj");
+            man = ObjectResourceReader.CreateObjectFromResource(Gl, "man.obj");
             house = ObjectResourceReader.CreateObjectFromResource(Gl, "cartoon_house.obj");
             rockWall = ObjectResourceReader.CreateObjectFromResource(Gl, "CaveWalls3.obj");
             ammo = ObjectResourceReader.CreateObjectFromResource(Gl, "ammo.obj");
@@ -179,8 +179,8 @@ namespace GrafikaSzeminarium
             // Drawing using the Renderers class
             Renderers.DrawSkyBox(Gl, program, skybox, camera.Position);
             Renderers.DrawGround(Gl, program, ground);
-            Renderers.DrawMrEgg(Gl, program, mrEgg, cubeArrangementModel.MrEggPosition);
-            Renderers.DrawFoxy(Gl, program, foxy, cubeArrangementModel.MrEggPosition);
+            Renderers.DrawMan(Gl, program, man, cubeArrangementModel.MrEggPosition);
+            Renderers.DrawFoxy(Gl, program, foxy, cubeArrangementModel.FoxyPositions,cubeArrangementModel.rad);
             Renderers.DrawHouse(Gl, program, house);
             Renderers.DrawWalls(Gl, program, rockWall);
             Renderers.DrawAmmo(Gl, program, ammo);

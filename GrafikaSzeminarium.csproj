@@ -21,6 +21,8 @@
     <None Remove="Resources\Foxy.obj" />
     <None Remove="Resources\grass.jpg" />
     <None Remove="Resources\grass.png" />
+    <None Remove="Resources\man.mtl" />
+    <None Remove="Resources\man.obj" />
     <None Remove="Resources\MrEgg.obj" />
     <None Remove="Resources\skybox.png" />
     <None Remove="Resources\tex1.png" />
@@ -44,6 +46,8 @@
     <EmbeddedResource Include="Resources\Foxy.mtl" />
     <EmbeddedResource Include="Resources\Foxy.obj" />
     <EmbeddedResource Include="Resources\grass.jpg" />
+    <EmbeddedResource Include="Resources\man.mtl" />
+    <EmbeddedResource Include="Resources\man.obj" />
     <EmbeddedResource Include="Resources\MrEgg.obj" />
     <EmbeddedResource Include="Resources\skybox.png" />
     <EmbeddedResource Include="Resources\tex1.png" />

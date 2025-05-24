@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Silk.NET.Vulkan;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -29,6 +30,38 @@ namespace Szeminarium
         // Példa sebesség vektor (ha billentyűzettel akarod mozgatni, ide jöhet egy input változó)
         private Vector3 mrEggVelocity = Vector3.Zero;
 
+        public List<Vector3> FoxyPositions { get; private set; } = new List<Vector3>();
+
+        public List<Vector3> FoxyVelocities = new List<Vector3>();
+
+        public float rad = 0;
+
+        public CubeArrangementModel()
+        {
+            // Induló pozíciók
+            FoxyPositions = new List<Vector3>
+            {
+                new Vector3(35f, -3f, 25f),
+                new Vector3(35f, -3f, 8f),
+                new Vector3(35f, -3f, -10f),
+                new Vector3(-35f, -3f, 25f),
+                new Vector3(-35f, -3f, 8f),
+                new Vector3(-35f, -3f, -10f)
+            };
+
+            // Minden Foxy kap egy irányt (pl. Z irányban előre mozog)
+            FoxyVelocities = new List<Vector3>
+            {
+                new Vector3(-2f, 0, 0),
+                new Vector3(-2f, 0, 0),
+                new Vector3(-2f, 0, 0),
+                new Vector3(2f, 0, 0),
+                new Vector3(2f, 0, 0),
+                new Vector3(2f, 0, 0),
+            };
+            //foxyVelocities = FoxyPositions.Select(p => new Vector3(-1f, 0, 0)).ToList();
+        }
+
         // Ezt kívülről be tudod állítani pl. input alapján
         public void SetMrEggVelocity(Vector3 velocity)
         {
@@ -44,8 +77,38 @@ namespace Szeminarium
 
             CenterCubeScale = 1 + 0.2 * Math.Sin(1.5 * Time);
 
-            // Pozíció frissítése a sebesség alapján
             MrEggPosition += mrEggVelocity * (float)deltaTime;
+            Boolean rotate = false;
+            for (int i = 0; i < FoxyPositions.Count; i++)
+            {
+                Vector3 vel = FoxyVelocities[i];
+                
+                if(i < 3)
+                {
+                    if (FoxyPositions[i].X < 5 || FoxyPositions[i].X > 35)
+                    {
+                        vel.X *= -1;
+                        FoxyVelocities[i] = vel;
+                        rotate = true;
+                    }
+                }
+                else
+                {
+                    if (FoxyPositions[i].X > -5 || FoxyPositions[i].X < -35)
+                    {
+                        vel.X *= -1;
+                        FoxyVelocities[i] = vel;
+                        rotate = true;
+                    }
+                }
+
+                if(i == 5 && rotate)
+                {
+                    rad = (rad == 0) ? 180 : 0;
+                }
+
+                FoxyPositions[i] += FoxyVelocities[i] * (float)deltaTime;
+            }
         }
     }
 }

@@ -34,25 +34,25 @@ namespace GrafikaSzeminarium
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        public static void DrawMrEgg(GL gl, uint program, ModelObjectDescriptor mrEgg, Vector3 position)
+        public static void DrawMan(GL gl, uint program, ModelObjectDescriptor man, Vector3 position)
         {
-            var eggMatrix = Matrix4X4.CreateScale(0.03f) *
+            var manMatrix = Matrix4X4.CreateScale(0.25f) *
                           Matrix4X4.CreateTranslation<float>(
                               new Vector3D<float>(position.X, position.Y, position.Z) +
                               new Vector3D<float>(0f, -3f, 0f));
 
-            SetModelMatrix(gl, program, eggMatrix);
+            SetModelMatrix(gl, program, manMatrix);
 
             int textureLocation = gl.GetUniformLocation(program, "uTexture");
             gl.Uniform1(textureLocation, 0);
             gl.ActiveTexture(TextureUnit.Texture0);
 
-            if (mrEgg.Texture.HasValue)
-                gl.BindTexture(TextureTarget.Texture2D, mrEgg.Texture.Value);
+            if (man.Texture.HasValue)
+                gl.BindTexture(TextureTarget.Texture2D, man.Texture.Value);
             else
                 gl.BindTexture(TextureTarget.Texture2D, 0);
 
-            DrawModelObject(gl, mrEgg);
+            DrawModelObject(gl, man);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
 
@@ -153,32 +153,38 @@ namespace GrafikaSzeminarium
             }
         }
 
-        public static void DrawFoxy(GL gl, uint program, ModelObjectDescriptor wolf, Vector3 position)
+        public static void DrawFoxy(GL gl, uint program, ModelObjectDescriptor wolf, List<Vector3> foxyPositions,float rad)
         {
-            var wolfMatrix = Matrix4X4.CreateScale(0.5f) *
-                           Matrix4X4.CreateTranslation<float>(
-                               new Vector3D<float>(position.X, position.Y, position.Z) +
-                               new Vector3D<float>(-3f, -3f, 0f));
 
-            SetModelMatrix(gl, program, wolfMatrix);
-
-            int textureLocation = gl.GetUniformLocation(program, "uTexture");
-            gl.Uniform1(textureLocation, 0);
-            gl.ActiveTexture(TextureUnit.Texture0);
-
-            if (wolf.Texture.HasValue)
+            foreach(var pos in foxyPositions)
             {
-                gl.BindTexture(TextureTarget.Texture2D, wolf.Texture.Value);
-                gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.LinearMipmapLinear);
-                gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
-            }
-            else
-            {
+                var wolfMatrix = Matrix4X4.CreateScale(0.5f) * Matrix4X4.CreateRotationY(MathF.PI / 180f * (-75f - rad)) * Matrix4X4.CreateTranslation(new Vector3D<float>(pos.X,pos.Y,pos.Z));
+                if (pos.X > 0)
+                {
+                    wolfMatrix = Matrix4X4.CreateScale(0.5f) * Matrix4X4.CreateRotationY(MathF.PI / 180f * (75f + rad)) * Matrix4X4.CreateTranslation(new Vector3D<float>(pos.X, pos.Y, pos.Z));
+                }
+
+                SetModelMatrix(gl, program, wolfMatrix);
+
+                int textureLocation = gl.GetUniformLocation(program, "uTexture");
+                gl.Uniform1(textureLocation, 0);
+                gl.ActiveTexture(TextureUnit.Texture0);
+
+                if (wolf.Texture.HasValue)
+                {
+                    gl.BindTexture(TextureTarget.Texture2D, wolf.Texture.Value);
+                    gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.LinearMipmapLinear);
+                    gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
+                }
+                else
+                {
+                    gl.BindTexture(TextureTarget.Texture2D, 0);
+                }
+
+                DrawModelObject(gl, wolf);
                 gl.BindTexture(TextureTarget.Texture2D, 0);
             }
-
-            DrawModelObject(gl, wolf);
-            gl.BindTexture(TextureTarget.Texture2D, 0);
+        
         }
 
         private static unsafe void SetModelMatrix(GL gl, uint program, Matrix4X4<float> modelMatrix)
