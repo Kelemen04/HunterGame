@@ -1,6 +1,7 @@
 ﻿using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using System.Numerics;
+using Szeminarium;
 
 namespace GrafikaSzeminarium
 {
@@ -19,7 +20,6 @@ namespace GrafikaSzeminarium
             DrawModelObject(gl, skybox);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
-
         public static void DrawGround(GL gl, uint program, ModelObjectDescriptor ground)
         {
             var groundMatrix = Matrix4X4.CreateScale(500f) * Matrix4X4.CreateTranslation(0f, -3f, 0f);
@@ -33,13 +33,9 @@ namespace GrafikaSzeminarium
             DrawModelObject(gl, ground);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
-
-        public static void DrawMan(GL gl, uint program, ModelObjectDescriptor man, Vector3 position)
+        public static void DrawMan(GL gl, uint program, ModelObjectDescriptor man, Vector3 position,float manYaw)
         {
-            var manMatrix = Matrix4X4.CreateScale(0.25f) *
-                          Matrix4X4.CreateTranslation<float>(
-                              new Vector3D<float>(position.X, position.Y, position.Z) +
-                              new Vector3D<float>(0f, -3f, 0f));
+            var manMatrix = Matrix4X4.CreateScale(0.25f) * Matrix4X4.CreateRotationY(CubeArrangementModel.DegreesToRadians(manYaw)) * Matrix4X4.CreateTranslation<float>(new Vector3D<float>(position.X, position.Y, position.Z));
 
             SetModelMatrix(gl, program, manMatrix);
 
@@ -55,7 +51,6 @@ namespace GrafikaSzeminarium
             DrawModelObject(gl, man);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
-
         public static void DrawHouse(GL gl, uint program, ModelObjectDescriptor house)
         {
             var houseMatrix = Matrix4X4.CreateScale(3f) * Matrix4X4.CreateTranslation<float>(new Vector3D<float>(0f, -3f, -45f));
@@ -74,7 +69,6 @@ namespace GrafikaSzeminarium
             DrawModelObject(gl, house);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
-
         public static void DrawWalls(GL gl, uint program, ModelObjectDescriptor wall)
         {
             var wallMatrix = Matrix4X4.CreateScale(0.7f) * Matrix4X4.CreateTranslation<float>(new Vector3D<float>(0f, -3f, 45f));
@@ -93,10 +87,9 @@ namespace GrafikaSzeminarium
             DrawModelObject(gl, wall);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
-
-        public static void DrawAmmo(GL gl, uint program, ModelObjectDescriptor ammo)
+        public static void DrawAmmo(GL gl, uint program, ModelObjectDescriptor ammo,float rotation)
         {
-            var ammoMatrix = Matrix4X4.CreateScale(20f) * Matrix4X4.CreateTranslation<float>(new Vector3D<float>(0f, -3f, 5f));
+            var ammoMatrix = Matrix4X4.CreateScale(0.5f) * Matrix4X4.CreateRotationX(CubeArrangementModel.DegreesToRadians(90f)) *  Matrix4X4.CreateRotationY(CubeArrangementModel.DegreesToRadians(rotation)) * Matrix4X4.CreateTranslation<float>(new Vector3D<float>(5f, -1f, -35f));
 
             SetModelMatrix(gl, program, ammoMatrix);
 
@@ -112,7 +105,6 @@ namespace GrafikaSzeminarium
             DrawModelObject(gl, ammo);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
-
         public static void DrawTrees(GL gl, uint program, ModelObjectDescriptor trees)
         {
             Vector3D<float>[] treePositions = new Vector3D<float>[]
@@ -152,7 +144,32 @@ namespace GrafikaSzeminarium
                 gl.BindTexture(TextureTarget.Texture2D, 0);
             }
         }
+        public static void DrawBigTrees(GL gl, uint program, ModelObjectDescriptor bigTrees)
+        {
+            Vector3D<float>[] treePositions = new Vector3D<float>[]
+            {
+                new Vector3D<float>(20f, -3f, -45f),
+                new Vector3D<float>(-20f, -3f, -45f),
+            };
 
+            foreach (var position in treePositions)
+            {
+                var modelMatrix = Matrix4X4.CreateScale(3f) * Matrix4X4.CreateTranslation(position);
+                SetModelMatrix(gl, program, modelMatrix);
+
+                int textureLocation = gl.GetUniformLocation(program, "uTexture");
+                gl.Uniform1(textureLocation, 0);
+                gl.ActiveTexture(TextureUnit.Texture0);
+
+                if (bigTrees.Texture.HasValue)
+                    gl.BindTexture(TextureTarget.Texture2D, bigTrees.Texture.Value);
+                else
+                    gl.BindTexture(TextureTarget.Texture2D, 0);
+
+                DrawModelObject(gl, bigTrees);
+                gl.BindTexture(TextureTarget.Texture2D, 0);
+            }
+        }
         public static void DrawFoxy(GL gl, uint program, ModelObjectDescriptor wolf, List<Vector3> foxyPositions,float rad)
         {
 
@@ -186,10 +203,8 @@ namespace GrafikaSzeminarium
             }
         
         }
-
         private static unsafe void SetModelMatrix(GL gl, uint program, Matrix4X4<float> modelMatrix)
         {
-            // Implementation of SetModelMatrix
             int modelLocation = gl.GetUniformLocation(program, "uModel");
             gl.UniformMatrix4(modelLocation, 1, false, (float*)&modelMatrix);
 
@@ -200,7 +215,6 @@ namespace GrafikaSzeminarium
                 gl.UniformMatrix3(normalLocation, 1, false, (float*)&normalMatrix);
             }
         }
-
         private static Matrix3X3<float> CalculateNormalMatrix(Matrix4X4<float> modelMatrix)
         {
             var modelMatrixWithoutTranslation = new Matrix4X4<float>(
@@ -214,7 +228,6 @@ namespace GrafikaSzeminarium
             Matrix4X4.Invert(modelMatrixWithoutTranslation, out var modelInvers);
             return new Matrix3X3<float>(Matrix4X4.Transpose(modelInvers));
         }
-
         private static unsafe void DrawModelObject(GL gl, ModelObjectDescriptor modelObject)
         {
             gl.BindVertexArray(modelObject.Vao);

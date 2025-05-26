@@ -1,92 +1,63 @@
-﻿
-using Silk.NET.Maths;
+﻿using Silk.NET.Maths;
+using System.Numerics;
 
 namespace Szeminarium
 {
     internal class CameraDescriptor
     {
-        public double DistanceToOrigin { get; private set; } = 1;
-
-        public double AngleToZYPlane { get; private set; } = 0;
-
-        public double AngleToZXPlane { get; private set; } = 0;
-
-        const double DistanceScaleFactor = 1.1;
-
-        const double AngleChangeStepSize = Math.PI / 180 * 5;
-
-        /// <summary>
-        /// Gets the position of the camera.
-        /// </summary>
-        public Vector3D<float> Position
+        public Vector3D<float> Position { get; set; } = new(0, 0, 5);
+        private float pitch = 0;
+        public float yaw = 90;
+        private const float speed = 1f;
+        private const float sensitivity = 0.09f;
+        public Vector3D<float> Front { get; private set; } = new(0, 0, -1);
+        public Vector3D<float> Up { get; private set; } = new(0, 1, 0);
+        public Vector3D<float> Right { get; private set; } = new(1, 0, 0);
+        public Vector3D<float> Target => Position + Front;
+        private static float DegreesToRadians(float degrees)
         {
-            get
+            return (float)(Math.PI / 180.0) * degrees;
+        }
+        public void UpdateVectors()
+        {
+            var front = new Vector3D<float>
+            (
+                MathF.Cos(DegreesToRadians(yaw)) * MathF.Cos(DegreesToRadians(pitch)),
+                MathF.Sin(DegreesToRadians(pitch)),
+                MathF.Sin(DegreesToRadians(yaw)) * MathF.Cos(DegreesToRadians(pitch))
+            );
+            Front = Vector3D.Normalize(front);
+            Right = Vector3D.Normalize(Vector3D.Cross(Front, new Vector3D<float>(0, 1, 0)));
+            Up = Vector3D.Normalize(Vector3D.Cross(Right, Front));
+        }
+        public void GoFront() => Position += Front * speed;
+        public void GoBack() => Position -= Front * speed;
+        public void GoLeft() => Position -= Right * speed;
+        public void GoRight() => Position += Right * speed;
+        public void ProcessMouseMovement(float xoffset, float yoffset)
+        {
+            xoffset *= sensitivity;
+            yoffset *= sensitivity;
+
+            yaw += xoffset;
+            pitch -= yoffset;
+
+            if (pitch > 89.0f)
+                pitch = 89.0f;
+            if (pitch < -89.0f)
+                pitch = -89.0f;
+
+            UpdateVectors();
+        }
+
+        public bool firstPerson = true;
+        public void SetPosition(Vector3D<float> newPosition)
+        {
+            if (firstPerson)
             {
-                return GetPointFromAngles(DistanceToOrigin, AngleToZYPlane, AngleToZXPlane);
+                Position = newPosition;
+                UpdateVectors();
             }
-        }
-
-        /// <summary>
-        /// Gets the up vector of the camera.
-        /// </summary>
-        public Vector3D<float> UpVector
-        {
-            get
-            {
-                return Vector3D.Normalize(GetPointFromAngles(DistanceToOrigin, AngleToZYPlane, AngleToZXPlane + Math.PI / 2));
-            }
-        }
-
-        /// <summary>
-        /// Gets the target point of the camera view.
-        /// </summary>
-        public Vector3D<float> Target
-        {
-            get
-            {
-                // For the moment the camera is always pointed at the origin.
-                return Vector3D<float>.Zero;
-            }
-        }
-
-        public void IncreaseZXAngle()
-        {
-            AngleToZXPlane += AngleChangeStepSize;
-        }
-
-        public void DecreaseZXAngle()
-        {
-            AngleToZXPlane -= AngleChangeStepSize;
-        }
-
-        public void IncreaseZYAngle()
-        {
-            AngleToZYPlane += AngleChangeStepSize;
-
-        }
-
-        public void DecreaseZYAngle()
-        {
-            AngleToZYPlane -= AngleChangeStepSize;
-        }
-
-        public void IncreaseDistance()
-        {
-            DistanceToOrigin = DistanceToOrigin * DistanceScaleFactor;
-        }
-
-        public void DecreaseDistance()
-        {
-            DistanceToOrigin = DistanceToOrigin / DistanceScaleFactor;
-        }
-
-        private static Vector3D<float> GetPointFromAngles(double distanceToOrigin, double angleToMinZYPlane, double angleToMinZXPlane)
-        {
-            var x = distanceToOrigin * Math.Cos(angleToMinZXPlane) * Math.Sin(angleToMinZYPlane);
-            var z = distanceToOrigin * Math.Cos(angleToMinZXPlane) * Math.Cos(angleToMinZYPlane);
-            var y = distanceToOrigin * Math.Sin(angleToMinZXPlane);
-
-            return new Vector3D<float>((float)x, (float)y, (float)z);
         }
     }
 }

@@ -11,6 +11,10 @@
   <ItemGroup>
     <None Remove="Resources\ammo.mtl" />
     <None Remove="Resources\ammo.obj" />
+    <None Remove="Resources\ammo2.mtl" />
+    <None Remove="Resources\ammo2.obj" />
+    <None Remove="Resources\bigTree.mtl" />
+    <None Remove="Resources\bigTree.obj" />
     <None Remove="Resources\cartoon_house.mtl" />
     <None Remove="Resources\cartoon_house.obj" />
     <None Remove="Resources\CaveWalls3.mtl" />
@@ -38,6 +42,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\ammo.mtl" />
     <EmbeddedResource Include="Resources\ammo.obj" />
+    <EmbeddedResource Include="Resources\ammo2.mtl" />
+    <EmbeddedResource Include="Resources\ammo2.obj" />
+    <EmbeddedResource Include="Resources\bigTree.mtl" />
+    <EmbeddedResource Include="Resources\bigTree.obj" />
     <EmbeddedResource Include="Resources\cartoon_house.mtl" />
     <EmbeddedResource Include="Resources\cartoon_house.obj" />
     <EmbeddedResource Include="Resources\CaveWalls3.mtl" />

@@ -1,4 +1,6 @@
-﻿using Silk.NET.Vulkan;
+﻿using GrafikaSzeminarium;
+using Silk.NET.Maths;
+using Silk.NET.Vulkan;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,20 +27,15 @@ namespace Szeminarium
         /// </summary>
         public double CenterCubeScale { get; private set; } = 1;
 
-        public Vector3 MrEggPosition { get; private set; } = Vector3.Zero;
+        public Vector3 ManPosition { get; set; } = new Vector3(0f, -3f, -35f);
 
-        // Példa sebesség vektor (ha billentyűzettel akarod mozgatni, ide jöhet egy input változó)
-        private Vector3 mrEggVelocity = Vector3.Zero;
-
+        private Vector3 manVelocity = Vector3.Zero;
         public List<Vector3> FoxyPositions { get; private set; } = new List<Vector3>();
-
         public List<Vector3> FoxyVelocities = new List<Vector3>();
 
         public float rad = 0;
-
         public CubeArrangementModel()
         {
-            // Induló pozíciók
             FoxyPositions = new List<Vector3>
             {
                 new Vector3(35f, -3f, 25f),
@@ -49,7 +46,6 @@ namespace Szeminarium
                 new Vector3(-35f, -3f, -10f)
             };
 
-            // Minden Foxy kap egy irányt (pl. Z irányban előre mozog)
             FoxyVelocities = new List<Vector3>
             {
                 new Vector3(-2f, 0, 0),
@@ -59,13 +55,32 @@ namespace Szeminarium
                 new Vector3(2f, 0, 0),
                 new Vector3(2f, 0, 0),
             };
-            //foxyVelocities = FoxyPositions.Select(p => new Vector3(-1f, 0, 0)).ToList();
         }
 
-        // Ezt kívülről be tudod állítani pl. input alapján
-        public void SetMrEggVelocity(Vector3 velocity)
+        public float ManYaw { get; set; } = 90f;
+        public void SetManDirectionFromCamera(Vector3 cameraFront)
         {
-            mrEggVelocity = velocity;
+            var flatFront = new Vector3(cameraFront.X, 0, cameraFront.Z);
+            if (flatFront.LengthSquared() > 0)
+            {
+                flatFront = Vector3.Normalize(flatFront);
+                manVelocity = flatFront * 5f;
+            }
+            else
+            {
+                manVelocity = Vector3.Zero;
+            }
+        }
+
+        public static float DegreesToRadians(float degrees)
+        {
+            return (float)(Math.PI / 180.0) * degrees;
+        }
+
+        public float ammoRotate = 0f;
+        public void RotateAmmo()
+        {
+            ammoRotate += 1;
         }
 
         internal void AdvanceTime(double deltaTime)
@@ -77,7 +92,15 @@ namespace Szeminarium
 
             CenterCubeScale = 1 + 0.2 * Math.Sin(1.5 * Time);
 
-            MrEggPosition += mrEggVelocity * (float)deltaTime;
+            var newPos = ManPosition + manVelocity * (float)deltaTime;
+
+            float halfSize = 50f;
+
+            if (MathF.Abs(newPos.X) <= halfSize && MathF.Abs(newPos.Z) <= halfSize)
+            {
+                ManPosition = newPos;
+            }
+
             Boolean rotate = false;
             for (int i = 0; i < FoxyPositions.Count; i++)
             {
