@@ -9,7 +9,7 @@ namespace Szeminarium
         private float pitch = 0;
         public float yaw = 90;
         private const float speed = 1f;
-        private const float sensitivity = 0.09f;
+        private const float sensitivity = 0.3f;
         public Vector3D<float> Front { get; private set; } = new(0, 0, -1);
         public Vector3D<float> Up { get; private set; } = new(0, 1, 0);
         public Vector3D<float> Right { get; private set; } = new(1, 0, 0);

@@ -12,26 +12,17 @@ namespace Szeminarium
 {
     internal class CubeArrangementModel
     {
-        /// <summary>
-        /// Gets or sets wheather the animation should run or it should be frozen.
-        /// </summary>
         public bool AnimationEnabled { get; set; } = true;
-
-        /// <summary>
-        /// The time of the simulation. It helps to calculate time dependent values.
-        /// </summary>
         private double Time { get; set; } = 0;
-
-        /// <summary>
-        /// The value by which the center cube is scaled. It varies between 0.8 and 1.2 with respect to the original size.
-        /// </summary>
         public double CenterCubeScale { get; private set; } = 1;
 
         public Vector3 ManPosition { get; set; } = new Vector3(0f, -3f, -35f);
-
         private Vector3 manVelocity = Vector3.Zero;
+
+        public Vector3 ammoPosition = new Vector3(5f, -1f, -35f);
         public List<Vector3> FoxyPositions { get; private set; } = new List<Vector3>();
         public List<Vector3> FoxyVelocities = new List<Vector3>();
+        public List<bool> FoxyAlive = new List<bool>();
 
         public float rad = 0;
         public CubeArrangementModel()
@@ -55,6 +46,46 @@ namespace Szeminarium
                 new Vector3(2f, 0, 0),
                 new Vector3(2f, 0, 0),
             };
+
+            FoxyAlive = new List<bool>
+            {
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+            };
+
+            bulletNr = 10;
+
+            ManPosition = new Vector3(0f, -3f, -35f);
+            manVelocity = Vector3.Zero;
+        }
+
+        public bool allDead()
+        {
+            for (int i = 0; i < FoxyAlive.Count; i++)
+            {
+                if (FoxyAlive[i] == true)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public class Bullet
+        {
+            public Vector3 Position;
+            public Vector3 Direction;
+            public float Speed;
+            public bool IsActive = false;
+
+            public void Update(float deltaTime)
+            {
+                Position += Direction * Speed * deltaTime;
+            }
         }
 
         public float ManYaw { get; set; } = 90f;
@@ -64,7 +95,7 @@ namespace Szeminarium
             if (flatFront.LengthSquared() > 0)
             {
                 flatFront = Vector3.Normalize(flatFront);
-                manVelocity = flatFront * 5f;
+                manVelocity = flatFront * 10f;
             }
             else
             {
@@ -83,6 +114,28 @@ namespace Szeminarium
             ammoRotate += 1;
         }
 
+        public Bullet bullet = new Bullet();
+        public int bulletNr;
+        public void Shoot(Vector3 cameraFront)
+        {
+            if (!bullet.IsActive)
+            {
+                bulletNr -= 1;
+                var flatFront = Vector3.Normalize(new Vector3(cameraFront.X, 0, cameraFront.Z));
+                var direction = Vector3.Normalize(Vector3.Lerp(flatFront, cameraFront, 0.5f));
+                if (direction.LengthSquared() > 0)
+                    direction = Vector3.Normalize(direction);
+                else
+                    direction = Vector3.UnitZ;
+
+                bullet.Position = ManPosition + new Vector3(0.7f, 3.3f, 0);
+                bullet.Direction = direction;
+                bullet.Speed = 50f;
+                bullet.IsActive = true;
+            }
+        }
+
+
         internal void AdvanceTime(double deltaTime)
         {
             if (!AnimationEnabled)
@@ -99,6 +152,30 @@ namespace Szeminarium
             if (MathF.Abs(newPos.X) <= halfSize && MathF.Abs(newPos.Z) <= halfSize)
             {
                 ManPosition = newPos;
+            }
+
+            if (MathF.Abs(ManPosition.X - ammoPosition.X) <= 1 && MathF.Abs(ManPosition.Z - ammoPosition.Z) <= 1)
+            {
+                bulletNr = 10;
+            }
+
+            for (int i = 0; i < FoxyPositions.Count; i++)
+            {
+                if (MathF.Abs(FoxyPositions[i].X - bullet.Position.X) <= 1 && MathF.Abs(FoxyPositions[i].Z - bullet.Position.Z) <= 2)
+                {
+                    FoxyAlive[i] = false;
+                    bullet.IsActive = false;
+                }
+            }
+
+            if (bullet.IsActive)
+            {
+                bullet.Update((float)deltaTime);
+
+                if ((bullet.Position - ManPosition).Length() >= 100f)
+                {
+                    bullet.IsActive = false;
+                }
             }
 
             Boolean rotate = false;

@@ -24,6 +24,7 @@ namespace GrafikaSzeminarium
         private static ModelObjectDescriptor house;
         private static ModelObjectDescriptor rockWall;
         private static ModelObjectDescriptor ammo;
+        private static ModelObjectDescriptor shootingAmmo;
         private static ModelObjectDescriptor trees;
         private static ModelObjectDescriptor bigTrees;
         private static ModelObjectDescriptor foxy;
@@ -69,6 +70,7 @@ namespace GrafikaSzeminarium
             ammo.Dispose();
             trees.Dispose();
             bigTrees.Dispose();
+            shootingAmmo.Dispose();
             Gl.DeleteProgram(program);
         }
 
@@ -89,6 +91,11 @@ namespace GrafikaSzeminarium
                 mouse.MouseMove += OnMouseMove;
             }
 
+            foreach (var mouse in inputContext.Mice)
+            {
+                mouse.MouseDown += OnMouseButton;
+            }
+
             graphicWindow.FramebufferResize += s => Gl.Viewport(s);
             imGuiController = new ImGuiController(Gl, graphicWindow, inputContext);
 
@@ -98,6 +105,7 @@ namespace GrafikaSzeminarium
             house = ObjectResourceReader.CreateObjectFromResource(Gl, "cartoon_house.obj");
             rockWall = ObjectResourceReader.CreateObjectFromResource(Gl, "CaveWalls3.obj");
             ammo = ObjectResourceReader.CreateObjectFromResource(Gl, "ammo2.obj");
+            shootingAmmo = ObjectResourceReader.CreateObjectFromResource(Gl, "ammo2.obj");
             trees = ObjectResourceReader.CreateObjectFromResource(Gl, "trees.obj");
             bigTrees = ObjectResourceReader.CreateObjectFromResource(Gl, "bigTree.obj");
             foxy = ObjectResourceReader.CreateObjectFromResource(Gl, "Foxy.obj");
@@ -157,7 +165,12 @@ namespace GrafikaSzeminarium
                 case Key.Right: camera.GoRight(); break;
                 case Key.Down: camera.GoBack(); break;
                 case Key.Up: camera.GoFront(); break;
-                case Key.Space: cubeArrangementModel.AnimationEnabled = !cubeArrangementModel.AnimationEnabled; break;
+                case Key.Space:
+                    if (cubeArrangementModel.allDead())
+                        RestartGame();
+                    else
+                        cubeArrangementModel.AnimationEnabled = !cubeArrangementModel.AnimationEnabled;
+                    break;
                 case Key.F: camera.firstPerson = !camera.firstPerson; break;
             }
         }
@@ -194,7 +207,17 @@ namespace GrafikaSzeminarium
         private static float lastY = 0;
         private static bool firstMouse = true;
 
-        private static void OnMouseMove(IMouse mouse, System.Numerics.Vector2 position)
+        private static void OnMouseButton(IMouse mouse,MouseButton button)
+        {
+            if (button == MouseButton.Left)
+            {
+                if(cubeArrangementModel.bulletNr > 0)
+                {
+                    cubeArrangementModel.Shoot(new Vector3(camera.Front.X, camera.Front.Y, camera.Front.Z));
+                }
+            }
+        }
+        private static void OnMouseMove(IMouse mouse,Vector2 position)
         {
             if (firstMouse)
             {
@@ -214,6 +237,30 @@ namespace GrafikaSzeminarium
         {
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             Gl.UseProgram(program);
+
+            var io = ImGui.GetIO();
+            io.WantCaptureMouse = true;
+            
+            if (cubeArrangementModel.allDead())
+            {
+                imGuiController.Update((float)deltaTime);
+
+                ImGui.SetNextWindowPos(new System.Numerics.Vector2(
+                    graphicWindow.Size.X / 2f,
+                    graphicWindow.Size.Y / 2f
+                ), ImGuiCond.Always, new System.Numerics.Vector2(2f,2f));
+
+                ImGui.Begin("Game Over", ImGuiWindowFlags.AlwaysAutoResize);
+                ImGui.Text("Jatek vege!");
+                if (keyboard.IsKeyPressed(Key.Space))
+                {
+                    RestartGame();
+                }
+                ImGui.End();
+
+                imGuiController.Render();
+                return;
+            }
 
             if (camera.firstPerson)
             {
@@ -237,10 +284,14 @@ namespace GrafikaSzeminarium
             Renderers.DrawSkyBox(Gl, program, skybox, camera.Position);
             Renderers.DrawGround(Gl, program, ground);
             Renderers.DrawMan(Gl, program, man, cubeArrangementModel.ManPosition,cubeArrangementModel.ManYaw);
-            Renderers.DrawFoxy(Gl, program, foxy, cubeArrangementModel.FoxyPositions,cubeArrangementModel.rad);
+            Renderers.DrawFoxy(Gl, program, foxy, cubeArrangementModel.FoxyPositions,cubeArrangementModel.FoxyAlive,cubeArrangementModel.rad);
             Renderers.DrawHouse(Gl, program, house);
             Renderers.DrawWalls(Gl, program, rockWall);
             Renderers.DrawAmmo(Gl, program, ammo, cubeArrangementModel.ammoRotate);
+            if (cubeArrangementModel.bullet != null && cubeArrangementModel.bullet.IsActive)
+            {
+                Renderers.DrawShootingAmmo(Gl, program, shootingAmmo,cubeArrangementModel.bullet.Position);
+            }
             Renderers.DrawTrees(Gl, program, trees);
             Renderers.DrawBigTrees(Gl, program, bigTrees);
 
@@ -249,6 +300,11 @@ namespace GrafikaSzeminarium
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(graphicWindow.Size.X / 2f, graphicWindow.Size.Y / 2f), ImGuiCond.Always, new System.Numerics.Vector2(0.5f, 0.5f));
             ImGui.Begin("Crosshair", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoBackground);
             ImGui.TextColored(new System.Numerics.Vector4(1, 0, 0, 1), "+");
+            ImGui.End();
+
+            ImGui.Begin("Bullet Number", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoBackground);
+            var number = cubeArrangementModel.bulletNr;
+            ImGui.TextColored(new System.Numerics.Vector4(1, 0, 0, 1), $"Bullet number : {number}");
             ImGui.End();
 
             imGuiController.Render();
@@ -279,6 +335,12 @@ namespace GrafikaSzeminarium
             var error = (ErrorCode)Gl.GetError();
             if (error != ErrorCode.NoError)
                 throw new Exception("GL.GetError() returned " + error.ToString());
+        }
+
+        public static void RestartGame()
+        {
+            cubeArrangementModel = new CubeArrangementModel();
+            camera = new CameraDescriptor();
         }
     }
 }

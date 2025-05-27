@@ -7,6 +7,7 @@ namespace GrafikaSzeminarium
 {
     public static class Renderers
     {
+        private static CubeArrangementModel cubeArrangementModel = new CubeArrangementModel();
         public static void DrawSkyBox(GL gl, uint program, ModelObjectDescriptor skybox, Vector3D<float> cameraPosition)
         {
             var modelMatrixSkyBox = Matrix4X4.CreateScale(1000f) * Matrix4X4.CreateTranslation(cameraPosition);
@@ -105,6 +106,25 @@ namespace GrafikaSzeminarium
             DrawModelObject(gl, ammo);
             gl.BindTexture(TextureTarget.Texture2D, 0);
         }
+
+        public static void DrawShootingAmmo(GL gl, uint program, ModelObjectDescriptor ammo,Vector3 pos)
+        {
+            var ammoMatrix = Matrix4X4.CreateScale(0.1f) * Matrix4X4.CreateRotationX(CubeArrangementModel.DegreesToRadians(90f)) * Matrix4X4.CreateTranslation(new Vector3D<float>(pos.X,pos.Y,pos.Z));
+
+            SetModelMatrix(gl, program, ammoMatrix);
+            
+            int textureLocation = gl.GetUniformLocation(program, "uTexture");
+            gl.Uniform1(textureLocation, 0);
+            gl.ActiveTexture(TextureUnit.Texture0);
+
+            if (ammo.Texture.HasValue)
+                gl.BindTexture(TextureTarget.Texture2D, ammo.Texture.Value);
+            else
+                gl.BindTexture(TextureTarget.Texture2D, 0);
+
+            DrawModelObject(gl, ammo);
+            gl.BindTexture(TextureTarget.Texture2D, 0);
+        }
         public static void DrawTrees(GL gl, uint program, ModelObjectDescriptor trees)
         {
             Vector3D<float>[] treePositions = new Vector3D<float>[]
@@ -170,38 +190,40 @@ namespace GrafikaSzeminarium
                 gl.BindTexture(TextureTarget.Texture2D, 0);
             }
         }
-        public static void DrawFoxy(GL gl, uint program, ModelObjectDescriptor wolf, List<Vector3> foxyPositions,float rad)
+        public static void DrawFoxy(GL gl, uint program, ModelObjectDescriptor foxy, List<Vector3> foxyPositions, List<bool> foxyAlive, float rad)
         {
-
-            foreach(var pos in foxyPositions)
+            for (int i = 0;i < foxyPositions.Count;i++)
             {
-                var wolfMatrix = Matrix4X4.CreateScale(0.5f) * Matrix4X4.CreateRotationY(MathF.PI / 180f * (-75f - rad)) * Matrix4X4.CreateTranslation(new Vector3D<float>(pos.X,pos.Y,pos.Z));
-                if (pos.X > 0)
+                if (foxyAlive[i])
                 {
-                    wolfMatrix = Matrix4X4.CreateScale(0.5f) * Matrix4X4.CreateRotationY(MathF.PI / 180f * (75f + rad)) * Matrix4X4.CreateTranslation(new Vector3D<float>(pos.X, pos.Y, pos.Z));
-                }
+                    var pos = foxyPositions[i];
+                    var foxyMatrix = Matrix4X4.CreateScale(0.5f) * Matrix4X4.CreateRotationY(MathF.PI / 180f * (-75f - rad)) * Matrix4X4.CreateTranslation(new Vector3D<float>(pos.X, pos.Y, pos.Z));
+                    if (pos.X > 0)
+                    {
+                        foxyMatrix = Matrix4X4.CreateScale(0.5f) * Matrix4X4.CreateRotationY(MathF.PI / 180f * (75f + rad)) * Matrix4X4.CreateTranslation(new Vector3D<float>(pos.X, pos.Y, pos.Z));
+                    }
 
-                SetModelMatrix(gl, program, wolfMatrix);
+                    SetModelMatrix(gl, program, foxyMatrix);
 
-                int textureLocation = gl.GetUniformLocation(program, "uTexture");
-                gl.Uniform1(textureLocation, 0);
-                gl.ActiveTexture(TextureUnit.Texture0);
+                    int textureLocation = gl.GetUniformLocation(program, "uTexture");
+                    gl.Uniform1(textureLocation, 0);
+                    gl.ActiveTexture(TextureUnit.Texture0);
 
-                if (wolf.Texture.HasValue)
-                {
-                    gl.BindTexture(TextureTarget.Texture2D, wolf.Texture.Value);
-                    gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.LinearMipmapLinear);
-                    gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
-                }
-                else
-                {
+                    if (foxy.Texture.HasValue)
+                    {
+                        gl.BindTexture(TextureTarget.Texture2D, foxy.Texture.Value);
+                        gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.LinearMipmapLinear);
+                        gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
+                    }
+                    else
+                    {
+                        gl.BindTexture(TextureTarget.Texture2D, 0);
+                    }
+
+                    DrawModelObject(gl, foxy);
                     gl.BindTexture(TextureTarget.Texture2D, 0);
                 }
-
-                DrawModelObject(gl, wolf);
-                gl.BindTexture(TextureTarget.Texture2D, 0);
             }
-        
         }
         private static unsafe void SetModelMatrix(GL gl, uint program, Matrix4X4<float> modelMatrix)
         {
@@ -232,8 +254,7 @@ namespace GrafikaSzeminarium
         {
             gl.BindVertexArray(modelObject.Vao);
             gl.BindBuffer(GLEnum.ElementArrayBuffer, modelObject.Indices);
-            gl.DrawElements(PrimitiveType.Triangles, modelObject.IndexArrayLength,
-                           DrawElementsType.UnsignedInt, null);
+            gl.DrawElements(PrimitiveType.Triangles, modelObject.IndexArrayLength,DrawElementsType.UnsignedInt, null);
             gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
             gl.BindVertexArray(0);
         }
