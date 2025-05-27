@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|e:\\egyetem\\4.felev\\graf\\vadaszos jatek\\cubearrangementmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|solutionrelative:cubearrangementmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|e:\\egyetem\\4.felev\\graf\\vadaszos jatek\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|e:\\egyetem\\4.felev\\graf\\vadaszos jatek\\objectresourcesreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|solutionrelative:objectresourcesreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|e:\\egyetem\\4.felev\\graf\\vadaszos jatek\\renderers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,12 +19,8 @@
       "RelativeMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|solutionrelative:cameradescriptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|e:\\egyetem\\4.felev\\graf\\vadaszos jatek\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|e:\\egyetem\\4.felev\\graf\\vadaszos jatek\\objectresourcesreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|solutionrelative:objectresourcesreader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|e:\\egyetem\\4.felev\\graf\\vadaszos jatek\\cubearrangementmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0C4A3462-5159-4CE7-AED3-CD6B7C1F8DF3}|GrafikaSzeminarium.csproj|solutionrelative:cubearrangementmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,17 +30,17 @@
       "DocumentGroups": [
         {
           "DockedHeight": 207,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAALMAAAAAAAAAAAAqwPAAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAgwH4AAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-24T16:25:28.976Z",
               "IsPinned": true,
@@ -49,53 +49,54 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "ObjectResourcesReader.cs",
+              "DocumentMoniker": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\ObjectResourcesReader.cs",
+              "RelativeDocumentMoniker": "ObjectResourcesReader.cs",
+              "ToolTip": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\ObjectResourcesReader.cs",
+              "RelativeToolTip": "ObjectResourcesReader.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAADwv+YAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-21T18:25:51.848Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Renderers.cs",
               "DocumentMoniker": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\Renderers.cs",
               "RelativeDocumentMoniker": "Renderers.cs",
               "ToolTip": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\Renderers.cs",
               "RelativeToolTip": "Renderers.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMYAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAL0AAAAAAAAAAAAIwMYAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-22T22:13:02.419Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "CameraDescriptor.cs",
               "DocumentMoniker": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\CameraDescriptor.cs",
               "RelativeDocumentMoniker": "CameraDescriptor.cs",
               "ToolTip": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\CameraDescriptor.cs",
               "RelativeToolTip": "CameraDescriptor.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAiwAsAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-22T18:28:05.775Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "CubeArrangementModel.cs",
               "DocumentMoniker": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\CubeArrangementModel.cs",
               "RelativeDocumentMoniker": "CubeArrangementModel.cs",
               "ToolTip": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\CubeArrangementModel.cs",
               "RelativeToolTip": "CubeArrangementModel.cs",
-              "ViewState": "AgIAAFUAAAAAAAAAAAAwwGwAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAAMwAAAAAAAAAAAAuwCUAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-21T20:11:43.535Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ObjectResourcesReader.cs",
-              "DocumentMoniker": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\ObjectResourcesReader.cs",
-              "RelativeDocumentMoniker": "ObjectResourcesReader.cs",
-              "ToolTip": "E:\\EGYETEM\\4.felev\\GRAF\\Vadaszos jatek\\ObjectResourcesReader.cs",
-              "RelativeToolTip": "ObjectResourcesReader.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T18:25:51.848Z"
             }
           ]
         }

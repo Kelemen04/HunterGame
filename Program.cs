@@ -245,10 +245,10 @@ namespace GrafikaSzeminarium
             {
                 imGuiController.Update((float)deltaTime);
 
-                ImGui.SetNextWindowPos(new System.Numerics.Vector2(
+                ImGui.SetNextWindowPos(new Vector2(
                     graphicWindow.Size.X / 2f,
                     graphicWindow.Size.Y / 2f
-                ), ImGuiCond.Always, new System.Numerics.Vector2(2f,2f));
+                ), ImGuiCond.Always, new Vector2(0.5f,0.5f));
 
                 ImGui.Begin("Game Over", ImGuiWindowFlags.AlwaysAutoResize);
                 ImGui.Text("Jatek vege!");
@@ -271,7 +271,7 @@ namespace GrafikaSzeminarium
             cubeArrangementModel.RotateAmmo();
 
             SetUniform3(LightColorVariableName, new Vector3(1f, 1f, 1f));
-            SetUniform3(LightPositionVariableName, new Vector3(7f, 7f, 7f));
+            SetUniform3(LightPositionVariableName, new Vector3(0f, 1000f, 0f));
             SetUniform3(ViewPositionVariableName, new Vector3(camera.Position.X, camera.Position.Y, camera.Position.Z));
             SetUniform1(ShinenessVariableName, shininess);
 
@@ -297,14 +297,14 @@ namespace GrafikaSzeminarium
 
             imGuiController.Update((float)deltaTime);
 
-            ImGui.SetNextWindowPos(new System.Numerics.Vector2(graphicWindow.Size.X / 2f, graphicWindow.Size.Y / 2f), ImGuiCond.Always, new System.Numerics.Vector2(0.5f, 0.5f));
+            ImGui.SetNextWindowPos(new Vector2(graphicWindow.Size.X / 2f, graphicWindow.Size.Y / 2f), ImGuiCond.Always, new Vector2(0.5f, 0.5f));
             ImGui.Begin("Crosshair", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoBackground);
-            ImGui.TextColored(new System.Numerics.Vector4(1, 0, 0, 1), "+");
+            ImGui.TextColored(new Vector4(1, 0, 0, 1), "+");
             ImGui.End();
 
             ImGui.Begin("Bullet Number", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoBackground);
             var number = cubeArrangementModel.bulletNr;
-            ImGui.TextColored(new System.Numerics.Vector4(1, 0, 0, 1), $"Bullet number : {number}");
+            ImGui.TextColored(new Vector4(1, 0, 0, 1), $"Bullet number : {number}");
             ImGui.End();
 
             imGuiController.Render();
